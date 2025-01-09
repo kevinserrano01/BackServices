@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'servicesApp',
 ]
 
 MIDDLEWARE = [
@@ -75,8 +77,12 @@ WSGI_APPLICATION = 'api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'services_db',  # Cambia esto por el nombre de tu base de datos
+        'USER': 'root',      # Cambia esto por tu usuario de MySQL
+        'PASSWORD': '12349876',  # Cambia esto por tu contraseña
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
