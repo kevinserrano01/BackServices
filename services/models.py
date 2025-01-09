@@ -14,3 +14,7 @@ class Services(models.Model):
 
     def __str__(self):
         return self.title
+
+
+# * implementar el modelo de status de StatusServices
+# class StatusServices(models.Model):
