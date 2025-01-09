@@ -7,3 +7,7 @@ from django.db import models
 
 
 # class Posts(models.Model):
+
+
+# * implementar el modelo de status de StatusServices
+# class StatusServices(models.Model):
