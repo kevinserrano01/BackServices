@@ -1,20 +1,21 @@
-from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import generics
+from rest_framework import status
 from .models import Services
 from .serializers import ServicesSerializer
 
 # Create your views here.
 
 
-class ServicesList(APIView):
-    def get(self, request):
-        services = Services.objects.all()
-        data = ServicesSerializer(services, many=True).data
-        return Response(data)
+class ServicesList(generics.ListCreateAPIView):
+    """Vista para listar y crear servicios"""
+    queryset = Services.objects.all()
+    serializer_class = ServicesSerializer
 
 
-class ServicesDetail(APIView):
-    def get(self, request, pk):
-        service = Services.objects.get(pk=pk)
-        data = ServicesSerializer(service).data
-        return Response(data)
+class ServicesDetail(generics.RetrieveUpdateDestroyAPIView):
+    """Vista para ver, editar y eliminar servicios"""
+    queryset = Services.objects.all()
+    serializer_class = ServicesSerializer
+    lookup_field = 'id'  # Permite buscar por el campo 'id'
