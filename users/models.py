@@ -3,9 +3,8 @@ from django.db import models
 
 # Create your models here.
 
-# * implementar el modelo de Users y Ratings
 
-class Users(AbstractUser):  
+class Users(AbstractUser):
     telephone = models.CharField(max_length=45)
     is_supplier = models.BooleanField(default=False)
     is_finder = models.BooleanField(default=False)
@@ -15,9 +14,11 @@ class Users(AbstractUser):
     def __str__(self):
         return self.username
 
-# class Ratings(models.Model):
 
 class Ratings(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     stars = models.IntegerField()
     comment = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.comment
