@@ -41,6 +41,7 @@ class UsersList(generics.ListAPIView):
     """Vista para listar usuarios"""
     queryset = Users.objects.all()
     serializer_class = UsersSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -52,6 +53,7 @@ class UsersDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Users.objects.all()
     serializer_class = UsersSerializer
     lookup_field = 'id'  # Permite buscar por el campo 'id'
+    permission_classes = [IsAuthenticated]
 
 
 class RatingsList(generics.ListCreateAPIView):
