@@ -16,8 +16,8 @@ class Posts(models.Model):
 
 class Requests(models.Model):
     message = models.CharField(max_length=150)
-    status = models.CharField(max_length=45)
-    reason = models.CharField(max_length=45)
+    status = models.CharField(max_length=45, default='pending')
+    reason = models.CharField(max_length=45, null=True, blank=True)
     user = models.ForeignKey('users.Users', on_delete=models.CASCADE)
     post = models.ForeignKey(Posts, on_delete=models.CASCADE)
 

@@ -54,7 +54,7 @@ class RequestsList(generics.ListCreateAPIView):
 
     # Asociar la solicitud con el usuario autenticado al crearla
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user, status='requested')
+        serializer.save(user=self.request.user, status='pending')
 
 
 class RequestsDetail(generics.RetrieveUpdateDestroyAPIView):
