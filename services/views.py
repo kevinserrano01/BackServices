@@ -19,3 +19,4 @@ class ServicesDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Services.objects.all()
     serializer_class = ServicesSerializer
     lookup_field = 'id'  # Permite buscar por el campo 'id'
+    permission_classes = [IsAuthenticated]
