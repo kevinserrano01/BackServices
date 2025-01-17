@@ -1,9 +1,14 @@
 from rest_framework import serializers
 from .models import Posts, Requests, StatusServices
+from users.serializers import UsersSerializer
+from services.serializers import ServicesSerializer
+
 from django.utils import timezone
 
 
 class PostsSerializer(serializers.ModelSerializer):
+    user = UsersSerializer()  # Serializador anidado para usuario
+    service = ServicesSerializer()  # Serializador anidado para servicio
     class Meta:
         model = Posts
         fields = '__all__'
@@ -19,12 +24,13 @@ class PostsSerializer(serializers.ModelSerializer):
 
 
 class RequestsSerializer(serializers.ModelSerializer):
+    post = PostsSerializer()
     class Meta:
         model = Requests
-        fields = ['message', 'status', 'reason', 'post_id', 'user_id']
+        fields = ['message', 'status', 'reason', 'post_id', 'user_id','post']
         extra_kwargs = {'reason': {'required': False}}
 
-    def create(self, validated_data):  # Extraer los campos adicionales del contexto
+    def create(self, validated_data):
         # Extraer los campos adicionales del contexto
         user = self.context['request'].user
         if not user.is_finder:
