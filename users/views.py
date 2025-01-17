@@ -69,3 +69,42 @@ class RatingsDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RatingsSerializer
     lookup_field = 'id'  # Permite buscar por el campo 'id'
     permission_classes = [IsAuthenticated]
+
+
+class ProfileView(generics.RetrieveUpdateDestroyAPIView):
+    """Vista para ver, editar y eliminar el perfil de un usuario"""
+    serializer_class = UsersSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def put(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "message": "Perfil actualizado exitosamente",
+                    "data": serializer.data
+                },
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            {
+                "message": "Error al actualizar el perfil",
+                "errors": serializer.errors
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    def delete(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.delete()
+        return Response(
+            {
+                "message": "Perfil eliminado exitosamente"
+            },
+            status=status.HTTP_204_NO_CONTENT
+        )
