@@ -24,25 +24,27 @@ class PostsSerializer(serializers.ModelSerializer):
 
 
 class RequestsSerializer(serializers.ModelSerializer):
-    post = PostsSerializer()
+    post = PostsSerializer(read_only=True) #ya que no pasamos el post solo queremos ver sus datos
     class Meta:
         model = Requests
         fields = ['message', 'status', 'reason', 'post_id', 'user_id','post']
         extra_kwargs = {'reason': {'required': False}}
 
     def create(self, validated_data):
+        
         # Extraer los campos adicionales del contexto
         user = self.context['request'].user
         if not user.is_finder:
             raise serializers.ValidationError(
                 "Only search engines can create requests.")
-        # Asegurar de que post_id esté en validated_data
+        
         post_id = self.context['request'].data.get('post_id')
+        post = Posts.objects.get(id=post_id)
         if not post_id:
             raise serializers.ValidationError("post_id is required.")
         validated_data['post_id'] = post_id
 
-        request = Requests.objects.create(
+        request = Requests.objects.create(post=post,
             **validated_data)  # Crear la solicitud
         return request
 
