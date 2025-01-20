@@ -8,8 +8,7 @@ from rest_framework.exceptions import ValidationError
 
 
 class PostsSerializer(serializers.ModelSerializer):
-    service = serializers.PrimaryKeyRelatedField(
-        queryset=Services.objects.all(), source='service_id')
+    user = UsersSerializer(read_only=True)
 
     class Meta:
         model = Posts
@@ -19,24 +18,13 @@ class PostsSerializer(serializers.ModelSerializer):
             'user': {'read_only': True}
         }
 
-    def create(self, validated_data):  # Extraer los campos adicionales del contexto
+    def create(self, validated_data):
         # Extraer el usuario autenticado del contexto
         user = self.context['request'].user
         if not user.is_supplier:
             raise serializers.ValidationError(
-                "Only suppliers can create publications.")
-
-        # Extraer el ID del servicio del validated_data
-        service_id = validated_data.pop('service')
-        # Verificar el tipo de datos
-        print(f"Tipo de service_id: {type(service_id)}")
-        try:
-            service = Services.objects.get(id=service_id)
-        except Services.DoesNotExist:
-            raise ValidationError(
-                {'service': 'Service with this ID does not exist.'})
-        post = Posts.objects.create(
-            user=user, service=service, **validated_data)
+                "Only suppliers can create posts.")
+        post = Posts.objects.create(user=user, **validated_data)
         return post
 
 

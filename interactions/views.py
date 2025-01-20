@@ -17,25 +17,6 @@ class PostsList(generics.ListCreateAPIView):
     serializer_class = PostsSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    """Un oferente puede publicar servicios"""
-
-    def perform_create(self, serializer):
-        if not self.request.user.is_supplier:  # corrobora que no sea un oferente
-            raise PermissionDenied("Only suppliers can publish services.")
-
-        service_id = self.request.data.get(
-            'service')  # obtiene el id del servicio
-        if not service_id:
-            raise serializers.ValidationError(
-                "The 'service_id' field is required.")
-        try:
-            service = Services.objects.get(id=service_id)
-        except Services.DoesNotExist:
-            raise serializers.ValidationError("The service does not exist.")
-
-        # asigna el servicio al post
-        serializer.save(user=self.request.user, service=service)
-
 
 class PostsDetail(generics.RetrieveUpdateDestroyAPIView):
     """Vista para ver, editar y eliminar posts"""
@@ -54,7 +35,8 @@ class RequestsList(generics.ListCreateAPIView):
 
     # Asociar la solicitud con el usuario autenticado al crearla
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user, status='pending',post_id=self.request.data.get('post_id'))
+        serializer.save(user=self.request.user, status='pending',
+                        post_id=self.request.data.get('post_id'))
 
 
 class RequestsDetail(generics.RetrieveUpdateDestroyAPIView):
