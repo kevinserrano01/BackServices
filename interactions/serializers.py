@@ -2,42 +2,61 @@ from rest_framework import serializers
 from .models import Posts, Requests, StatusServices
 from users.serializers import UsersSerializer
 from services.serializers import ServicesSerializer
-
+from services.models import Services
 from django.utils import timezone
+from rest_framework.exceptions import ValidationError
 
 
 class PostsSerializer(serializers.ModelSerializer):
-    user = UsersSerializer()  # Serializador anidado para usuario
-    service = ServicesSerializer()  # Serializador anidado para servicio
+    service = serializers.PrimaryKeyRelatedField(
+        queryset=Services.objects.all(), source='service_id')
+
     class Meta:
         model = Posts
         fields = '__all__'
+        extra_kwargs = {
+            # Hacer que el campo user sea de solo lectura
+            'user': {'read_only': True}
+        }
 
     def create(self, validated_data):  # Extraer los campos adicionales del contexto
-        # Extraer los campos adicionales del contexto
-        user = validated_data.pop('user')
-        # user = self.context['request'].user #esto es para extraer el usuario autenticado
-        service = validated_data.pop('service')
+        # Extraer el usuario autenticado del contexto
+        user = self.context['request'].user
+        if not user.is_supplier:
+            raise serializers.ValidationError(
+                "Only suppliers can create publications.")
+
+        # Extraer el ID del servicio del validated_data
+        service_id = validated_data.pop('service')
+        # Verificar el tipo de datos
+        print(f"Tipo de service_id: {type(service_id)}")
+        try:
+            service = Services.objects.get(id=service_id)
+        except Services.DoesNotExist:
+            raise ValidationError(
+                {'service': 'Service with this ID does not exist.'})
         post = Posts.objects.create(
-            user=user, service=service, **validated_data)  # Crear el post
+            user=user, service=service, **validated_data)
         return post
 
 
 class RequestsSerializer(serializers.ModelSerializer):
-    post = PostsSerializer(read_only=True) #ya que no pasamos el post solo queremos ver sus datos
+    # ya que no pasamos el post solo queremos ver sus datos
+    post = PostsSerializer(read_only=True)
+
     class Meta:
         model = Requests
-        fields = ['message', 'status', 'reason', 'post_id', 'user_id','post']
+        fields = ['message', 'status', 'reason', 'post_id', 'user_id', 'post']
         extra_kwargs = {'reason': {'required': False}}
 
     def create(self, validated_data):
-        
+
         # Extraer los campos adicionales del contexto
         user = self.context['request'].user
         if not user.is_finder:
             raise serializers.ValidationError(
                 "Only search engines can create requests.")
-        
+
         post_id = self.context['request'].data.get('post_id')
         post = Posts.objects.get(id=post_id)
         if not post_id:
@@ -45,7 +64,7 @@ class RequestsSerializer(serializers.ModelSerializer):
         validated_data['post_id'] = post_id
 
         request = Requests.objects.create(post=post,
-            **validated_data)  # Crear la solicitud
+                                          **validated_data)  # Crear la solicitud
         return request
 
     def update(self, instance, validated_data):
