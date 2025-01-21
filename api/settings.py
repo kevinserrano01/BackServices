@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 from decouple import config
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'interactions',
     'rest_framework_simplejwt',
     'corsheaders',
+    'django_filters',
 ]
 
 AUTH_USER_MODEL = 'users.Users'
@@ -142,8 +144,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
 }
-from datetime import timedelta
 # tiempo de expiracion de los tokens
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
