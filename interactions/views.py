@@ -30,13 +30,7 @@ class RequestsList(generics.ListCreateAPIView):
     """Vista para listar y crear requests"""
     queryset = Requests.objects.all()
     serializer_class = RequestsSerializer
-    # Solo usuarios autenticados pueden crear requests
-    # permission_classes = [IsAuthenticated]
-
-    # Asociar la solicitud con el usuario autenticado al crearla
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user, status='pending',
-                        post_id=self.request.data.get('post_id'))
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class RequestsDetail(generics.RetrieveUpdateDestroyAPIView):

@@ -29,13 +29,14 @@ class PostsSerializer(serializers.ModelSerializer):
 
 
 class RequestsSerializer(serializers.ModelSerializer):
-    # ya que no pasamos el post solo queremos ver sus datos
     post = PostsSerializer(read_only=True)
-
+    user = UsersSerializer(read_only=True)
     class Meta:
         model = Requests
-        fields = ['message', 'status', 'reason', 'post_id', 'user_id', 'post']
-        extra_kwargs = {'reason': {'required': False}}
+        fields = '__all__'
+        extra_kwargs = {'reason': {'required': False},
+                        'user': {'read_only': True},
+                        'post': {'read_only': True}}
 
     def create(self, validated_data):
 
@@ -49,9 +50,8 @@ class RequestsSerializer(serializers.ModelSerializer):
         post = Posts.objects.get(id=post_id)
         if not post_id:
             raise serializers.ValidationError("post_id is required.")
-        validated_data['post_id'] = post_id
 
-        request = Requests.objects.create(post=post,
+        request = Requests.objects.create(post=post,user=user,
                                           **validated_data)  # Crear la solicitud
         return request
 
