@@ -7,7 +7,7 @@ from services.models import Services
 from rest_framework.exceptions import PermissionDenied
 from .serializers import PostsSerializer, RequestsSerializer, StatusServicesSerializer
 from services.serializers import ServicesSerializer
-
+from django_filters.rest_framework import DjangoFilterBackend
 # Create your views here.
 
 
@@ -16,6 +16,21 @@ class PostsList(generics.ListCreateAPIView):
     queryset = Posts.objects.all()
     serializer_class = PostsSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = Posts.objects.all()
+        service_id = self.request.query_params.get('service', None)
+        if service_id is not None:
+            queryset = queryset.filter(service__id=service_id)
+        return queryset
+
+class PostsDetail(generics.RetrieveUpdateDestroyAPIView):
+    """Vista para ver, editar y eliminar posts"""
+    queryset = Posts.objects.all()
+    serializer_class = PostsSerializer
+    lookup_field = 'id'  # Permite buscar por el campo 'id'
+    permission_classes = [IsAuthenticated]
+
 
 
 class PostsDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -31,7 +46,12 @@ class RequestsList(generics.ListCreateAPIView):
     queryset = Requests.objects.all()
     serializer_class = RequestsSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status']
 
+    def get_queryset(self):
+        queryset = Requests.objects.all()
+        return queryset
 
 class RequestsDetail(generics.RetrieveUpdateDestroyAPIView):
     """Vista para ver, editar y eliminar requests"""
