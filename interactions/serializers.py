@@ -71,14 +71,24 @@ class RequestsSerializer(serializers.ModelSerializer):
 
 
 class StatusServicesSerializer(serializers.ModelSerializer):
+    user = UsersSerializer(read_only=True)
+    request = RequestsSerializer(read_only=True)
     class Meta:
         model = StatusServices
         fields = '__all__'
 
+        extra_kwargs = {'user': {'required': False},
+                        'request': {'read_only': True}, }
+           
     def create(self, validated_data):
-        status_service = StatusServices.objects.create(**validated_data)
-        return status_service
+        user = self.context['request'].user
+        request_id = self.context['request'].data.get('request')
+        request = Requests.objects.get(id=request_id)
+        request = StatusServices.objects.create(user=user, request=request, **validated_data)
 
+        return request
+    
+    
     def update(self, instance, validated_data):
         instance.status = validated_data.get('status', instance.status)
         instance.comment = validated_data.get('comment', instance.comment)

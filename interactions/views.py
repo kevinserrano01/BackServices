@@ -74,7 +74,13 @@ class StatusServicesList(generics.ListCreateAPIView):
     queryset = StatusServices.objects.all()
     serializer_class = StatusServicesSerializer
 
-
+    def get_queryset(self):
+        queryset = StatusServices.objects.all()
+        request_id = self.request.query_params.get('request', None)
+        if request_id is not None:
+            queryset = queryset.filter(request__id=request_id)
+        return queryset
+    
 class StatusServicesDetail(generics.RetrieveUpdateDestroyAPIView):
     """Vista para ver, editar y eliminar status de servicios"""
     queryset = StatusServices.objects.all()
