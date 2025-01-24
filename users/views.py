@@ -60,7 +60,16 @@ class RatingsList(generics.ListCreateAPIView):
     """Vista para listar y crear ratings"""
     queryset = Ratings.objects.all()
     serializer_class = RatingsSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    #permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = Ratings.objects.all()
+        user_id = self.request.query_params.get('user', None)
+        
+        if user_id is not None:
+            queryset = queryset.filter(user__id=user_id)
+            
+        return queryset
 
 
 class RatingsDetail(generics.RetrieveUpdateDestroyAPIView):
