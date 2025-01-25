@@ -11,6 +11,20 @@ class PostsSerializer(serializers.ModelSerializer):
     user = UsersSerializer(read_only=True)
 
     class Meta:
+        """
+        Representa un serializador de modelos Django para el modelo Posts.
+
+        Esta clase define un serializador para el modelo Posts, especificando campos
+        para incluir todos los atributos del modelo. Además, personaliza el manejo
+        del campo 'user' haciéndolo de sólo lectura. Este serializador se puede utilizar
+        para convertir instancias del modelo en formato JSON o para validar y guardar datos
+        de entrada para el modelo.
+
+        Attributes:
+            Meta: Contiene opciones para el serializador, incluido el modelo
+            a serializar, los campos a incluir, y cualquier argumento extra (p.e.,
+            hacer que los campos sean de sólo lectura).
+        """
         model = Posts
         fields = '__all__'
         extra_kwargs = {
@@ -19,6 +33,21 @@ class PostsSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        """
+        Crea una nueva entrada para un usuario proveedor basándose en los datos
+        validados y el usuario autenticado del contexto de solicitud.
+
+        Parameters:
+            validated_data (dict): Los datos validados que contienen los campos
+            necesarios para crear una nueva entrada.
+
+        Raises:
+            serializers.ValidationError: Si el usuario autenticado no es un proveedor.
+
+        Returns:
+            Posts: La instancia de publicación recién creada asociada al
+            usuario proveedor autenticado.
+        """
         # Extraer el usuario autenticado del contexto
         user = self.context['request'].user
         if not user.is_supplier:
