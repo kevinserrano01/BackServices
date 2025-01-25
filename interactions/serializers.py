@@ -84,21 +84,6 @@ class RequestsSerializer(serializers.ModelSerializer):
                                           **validated_data)  # Crear la solicitud
         return request
 
-    def update(self, instance, validated_data):
-        status = validated_data.get('status', instance.status)
-        reason = validated_data.get('reason', instance.reason)
-        if status == 'rejected' and not reason:
-            raise serializers.ValidationError(
-                "The reason is required when the status is 'rejected'.")
-        instance.status = status
-        instance.reason = reason
-        instance.save()
-        if status == 'accepted':
-            StatusServices.objects.create(request=instance, status='accepted',
-                                          comment='The search engine has accepted the request.', user=instance.user)
-        return instance
-
-
 class StatusServicesSerializer(serializers.ModelSerializer):
     user = UsersSerializer(read_only=True)
     request = RequestsSerializer(read_only=True)
@@ -113,9 +98,9 @@ class StatusServicesSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         request_id = self.context['request'].data.get('request')
         request = Requests.objects.get(id=request_id)
-        request = StatusServices.objects.create(user=user, request=request, **validated_data)
+        status_services = StatusServices.objects.create(user=user, request=request, **validated_data)
 
-        return request
+        return status_services
     
     
     def update(self, instance, validated_data):

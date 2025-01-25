@@ -29,8 +29,8 @@ class Requests(models.Model):
 
 
 class StatusServices(models.Model):
-    status = models.CharField(max_length=45)
-    comment = models.CharField(max_length=150)
+    status = models.CharField(max_length=45, default='en proceso')
+    comment = models.CharField(max_length=150, null=True, blank=True)
     dateupdated = models.DateTimeField(auto_now_add=True)
     request = models.ForeignKey(Requests, on_delete=models.CASCADE)
     user = models.ForeignKey('users.Users', on_delete=models.CASCADE)
