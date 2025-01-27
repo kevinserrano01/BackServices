@@ -21,6 +21,7 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 class RatingsSerializer(serializers.ModelSerializer):
+    user = UsersSerializer(read_only=True)
     class Meta:
         model = Ratings
         fields = '__all__'
