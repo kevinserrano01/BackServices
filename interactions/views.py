@@ -32,15 +32,6 @@ class PostsDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
-
-class PostsDetail(generics.RetrieveUpdateDestroyAPIView):
-    """Vista para ver, editar y eliminar posts"""
-    queryset = Posts.objects.all()
-    serializer_class = PostsSerializer
-    lookup_field = 'id'  # Permite buscar por el campo 'id'
-    permission_classes = [IsAuthenticated]
-
-
 class RequestsList(generics.ListCreateAPIView):
     """Vista para listar y crear requests"""
     queryset = Requests.objects.all()
