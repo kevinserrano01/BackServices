@@ -19,12 +19,12 @@ class UsersSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-
 class RatingsSerializer(serializers.ModelSerializer):
-    user = UsersSerializer(read_only=True)
+    user_id = serializers.IntegerField(write_only=True, required=True)   
     class Meta:
         model = Ratings
-        fields = '__all__'
+        fields = ['id', 'stars', 'comment','user_id']
+        read_only_fields = ['user_id']
     def create(self, validated_data):
         rating = Ratings.objects.create(**validated_data)
         return rating
