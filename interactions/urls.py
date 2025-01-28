@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostsList, PostsDetail, RequestsList, RequestsDetail, StatusServicesList, StatusServicesDetail
+from .views import PostsList, PostsDetail, RequestsList, RequestsDetail, StatusServicesList, StatusServicesDetail, SavedPostsList, SavedPostsDetail
 
 urlpatterns = [
     path('posts/', PostsList.as_view(), name='posts_list'),
@@ -10,4 +10,6 @@ urlpatterns = [
          name='statusservices_list'),
     path('statusservices/<int:id>/', StatusServicesDetail.as_view(),
          name='statusservices_detail'),
+    path('savedPosts/', SavedPostsList.as_view(), name='savedposts_list'),
+    path('savedPosts/<int:id>/', SavedPostsDetail.as_view(),)
 ]

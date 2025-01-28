@@ -1,10 +1,7 @@
 from rest_framework import serializers
-from .models import Posts, Requests, StatusServices
+from .models import Posts, Requests, StatusServices, SavedPosts
 from users.serializers import UsersSerializer
-from services.serializers import ServicesSerializer
-from services.models import Services
 from django.utils import timezone
-from rest_framework.exceptions import ValidationError
 
 
 class PostsSerializer(serializers.ModelSerializer):
@@ -109,3 +106,21 @@ class StatusServicesSerializer(serializers.ModelSerializer):
         instance.dateupdated = timezone.now()
         instance.save()
         return instance
+
+class SavedPostsSerializer(serializers.ModelSerializer):
+    user = UsersSerializer(read_only=True)
+    post = PostsSerializer(read_only=True)
+    class Meta:
+        model = SavedPosts
+        fields = '__all__'
+        extra_kwargs = {'user': {'read_only': True},
+                        'post': {'read_only': True}}
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        post_id = self.context['request'].data.get('post_id')
+        post = Posts.objects.get(id=post_id)
+        if not post_id:
+            raise serializers.ValidationError("post_id is required.")
+        saved_post = SavedPosts.objects.create(user=user, post=post, **validated_data)
+        return saved_post
