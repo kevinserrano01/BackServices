@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Posts, Requests, StatusServices
+from .models import Posts, Requests, StatusServices, SavedPosts
 
 # Register your models here.
 
@@ -18,3 +18,7 @@ class RequestsAdmin(admin.ModelAdmin):
 @admin.register(StatusServices)
 class StatusServicesAdmin(admin.ModelAdmin):
     list_display = ('status', 'comment', 'dateupdated', 'request', 'user')
+
+@admin.register(SavedPosts)
+class SavedPostsAdmin(admin.ModelAdmin):
+    list_display = ('user', 'post')

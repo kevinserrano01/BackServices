@@ -1,16 +1,11 @@
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
-from rest_framework import generics, serializers
-from rest_framework import status
-from .models import Posts, Requests, StatusServices
-from services.models import Services
+from rest_framework import generics
+from .models import Posts, Requests, StatusServices, SavedPosts
 from rest_framework.exceptions import PermissionDenied
-from .serializers import PostsSerializer, RequestsSerializer, StatusServicesSerializer
-from services.serializers import ServicesSerializer
+from .serializers import PostsSerializer, RequestsSerializer, StatusServicesSerializer, SavedPostsSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from users.models import Users
-# Create your views here.
 
 
 class PostsList(generics.ListCreateAPIView):
@@ -101,3 +96,20 @@ class StatusServicesDetail(generics.RetrieveUpdateDestroyAPIView):
             raise PermissionDenied(
                 "only the offeror or the searcher can update the status of the application")
         serializer.save()
+
+class SavedPostsList(generics.ListCreateAPIView):
+    """Vista para listar y crear posts guardados"""
+    serializer_class = SavedPostsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Filtrar publicaciones guardas solo del usuario logueado
+        user = self.request.user # Obtener al usuario logueado
+        return SavedPosts.objects.filter(user=user) # Reemplaza 'user' con el campo adecuado en tu modelo
+
+class SavedPostsDetail(generics.RetrieveUpdateDestroyAPIView):
+    """Vista para ver, editar y eliminar posts guardados"""
+    queryset = SavedPosts.objects.all()
+    serializer_class = SavedPostsSerializer
+    lookup_field = 'id'
+    permission_classes = [IsAuthenticated]
