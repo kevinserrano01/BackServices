@@ -63,6 +63,7 @@ class RatingsList(generics.ListCreateAPIView):
     #permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        """Filtra ratings por usuario"""
         queryset = Ratings.objects.all()
         user_id = self.request.query_params.get('user', None)
         

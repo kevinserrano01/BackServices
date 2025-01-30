@@ -7,14 +7,21 @@ class UsersSerializer(serializers.ModelSerializer):
         model = Users
         # Campos visibles en la API
         fields = ['id', 'username', 'email', 'first_name', 'last_name',
-                  'telephone', 'is_supplier', 'is_finder', 'created_at', 'updated_at','password']
+                  'telephone', 'is_supplier', 'is_finder', 'image', 'created_at', 'updated_at','password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         """Crea un usuario con la contraseña encriptada"""
+        # Extraer la contraseña y la imagen antes de usar create_user
         password = validated_data.pop('password')
+        image_profile = validated_data.pop('image', None)
+
         user = Users.objects.create_user(**validated_data)
         user.set_password(password)
+        # Configurar la imagen de perfil, si está presente
+        if image_profile:
+            user.image = image_profile
+
         user.is_active = True
         user.save()
         return user
