@@ -27,11 +27,11 @@ class Services(models.Model):
         updated_at (datetime): La fecha y hora de la última actualización
             se actualizó por última vez, se establece automáticamente en las modificaciones.
     """
-    title = models.CharField(max_length=45)
-    description = models.CharField(max_length=400)
-    category = models.CharField(max_length=45)
-    duration = models.CharField(max_length=45)
-    tags = models.CharField(max_length=45)
+    title = models.CharField(max_length=300)
+    description = models.CharField(max_length=500)
+    category = models.CharField(max_length=100)
+    duration = models.CharField(max_length=100)
+    tags = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

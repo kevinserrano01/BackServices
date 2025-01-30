@@ -8,6 +8,7 @@ class Users(AbstractUser):
     telephone = models.CharField(max_length=45)
     is_supplier = models.BooleanField(default=False)
     is_finder = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='users/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -18,7 +19,7 @@ class Users(AbstractUser):
 class Ratings(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     stars = models.IntegerField()
-    comment = models.CharField(max_length=150)
+    comment = models.CharField(max_length=400)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
