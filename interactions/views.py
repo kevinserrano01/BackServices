@@ -40,16 +40,12 @@ class RequestsList(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = Requests.objects.all()
         user_id = self.request.query_params.get('user', None)
-        print(user_id)
         if user_id is not None:
             profile = get_object_or_404(Users, id=user_id)
-            print(profile)
             if profile.is_finder:
                 queryset = queryset.filter(user=profile)
-                print(queryset)
             if profile.is_supplier:
                 queryset = queryset.filter(post__user_id=profile.id)
-                print(queryset)
         return queryset
 
         

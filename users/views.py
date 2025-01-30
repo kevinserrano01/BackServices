@@ -91,6 +91,10 @@ class ProfileView(generics.RetrieveUpdateDestroyAPIView):
 
     def put(self, request, *args, **kwargs):
         user = self.get_object()
+        # Validar si se envió la imagen en la solicitud
+        image = request.FILES.get('image', None)
+        if image:
+            user.image = image
         serializer = self.get_serializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()

@@ -26,6 +26,18 @@ class UsersSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.telephone = validated_data.get('telephone', instance.telephone)
+        instance.is_supplier = validated_data.get('is_supplier', instance.is_supplier)
+        instance.is_finder = validated_data.get('is_finder', instance.is_finder)
+        instance.image = validated_data.get('image', instance.image)
+        instance.save()
+        return instance
+
 class RatingsSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(write_only=True, required=True)   
     class Meta:
