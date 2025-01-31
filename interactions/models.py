@@ -4,9 +4,9 @@ from django.db import models
 
 
 class Posts(models.Model):
-    description = models.CharField(max_length=150)
+    description = models.CharField(max_length=400)
     datecreated = models.DateTimeField(auto_now_add=True)
-    disponibility = models.CharField(max_length=45)
+    disponibility = models.CharField(max_length=150)
     user = models.ForeignKey('users.Users', on_delete=models.CASCADE)
     service = models.ForeignKey('services.Services', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)
@@ -16,9 +16,9 @@ class Posts(models.Model):
 
 
 class Requests(models.Model):
-    message = models.CharField(max_length=150)
+    message = models.CharField(max_length=300)
     status = models.CharField(max_length=45, default='pending')
-    reason = models.CharField(max_length=120, null=True, blank=True)
+    reason = models.CharField(max_length=350, null=True, blank=True)
     user = models.ForeignKey('users.Users', on_delete=models.CASCADE)
     post = models.ForeignKey(Posts, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -30,7 +30,7 @@ class Requests(models.Model):
 
 class StatusServices(models.Model):
     status = models.CharField(max_length=45, default='en proceso')
-    comment = models.CharField(max_length=150, null=True, blank=True)
+    comment = models.CharField(max_length=350, null=True, blank=True)
     dateupdated = models.DateTimeField(auto_now_add=True)
     request = models.ForeignKey(Requests, on_delete=models.CASCADE)
     user = models.ForeignKey('users.Users', on_delete=models.CASCADE)
