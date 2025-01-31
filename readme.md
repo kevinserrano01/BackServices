@@ -1,6 +1,6 @@
 #   ""    SERVIFY     ""
 
-# Aplicacion  de Servicio con Python, Django
+# Aplicacion  de Servicio con Python, Django (Base de Datos: MySql)
 
 ## **Documentación Técnica**
 
@@ -14,18 +14,18 @@
     El objetivo es proporcionar una plataforma intuitiva, responsiva y accesible para conectar oferentes con buscadores, facilitando la gestión de servicios desde cualquier dispositivo.
 
 ### **Guía de Instalación**
-- **Requisitos previos**
+  **Requisitos previos**
   - Node.js (versión )
   - python (version )
 
-  entorno virtual 
+  - entorno virtual 
     python -m venv django-venv
     .\django-venv\Scripts\activate
 
-instalar requerimientos
+  - instalar requerimientos
     pip install -r requirements.txt
 
-ejecutar 
+  - ejecutar 
     python3 manage.py runserver
 
 ###  **Instrucciones de instalación**
@@ -36,8 +36,7 @@ ejecutar
      ```
   2. Activar:
      ```bash
-     python -m venv django-venv
-    .\django-venv\Scripts\activate
+     python -m venv django-venv.\django-venv\Scripts\activate
      ```
   3. Aplica las migraciones de base de datos:
      ```bash
@@ -78,7 +77,7 @@ ejecutar
 
 ### **Configuración del Entorno **
 #### Variables de entorno: 
-     Crear un archivo .env en la raíz del proyecto con las siguientes variables
+    Crear un archivo .env en la raíz del proyecto con las siguientes variables
 
     SECRET_KEY= 
     DB_NAME=services
