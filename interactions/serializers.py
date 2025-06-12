@@ -73,9 +73,12 @@ class RequestsSerializer(serializers.ModelSerializer):
                 "Only search engines can create requests.")
 
         post_id = self.context['request'].data.get('post_id')
-        post = Posts.objects.get(id=post_id)
         if not post_id:
             raise serializers.ValidationError("post_id is required.")
+        try:
+            post = Posts.objects.get(id=post_id)
+        except Posts.DoesNotExist:
+            raise serializers.ValidationError("Invalid post_id.")
 
         request = Requests.objects.create(post=post,user=user,
                                           **validated_data)  # Crear la solicitud
@@ -119,8 +122,11 @@ class SavedPostsSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         post_id = self.context['request'].data.get('post_id')
-        post = Posts.objects.get(id=post_id)
         if not post_id:
             raise serializers.ValidationError("post_id is required.")
+        try:
+            post = Posts.objects.get(id=post_id)
+        except Posts.DoesNotExist:
+            raise serializers.ValidationError("Invalid post_id.")
         saved_post = SavedPosts.objects.create(user=user, post=post, **validated_data)
         return saved_post
